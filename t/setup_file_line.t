@@ -116,6 +116,23 @@ test_tx_action(
     },
 );
 test_tx_action(
+    name          => "can handle empty file content properly",
+    tmpdir        => $tmpdir,
+    f             => "Setup::File::Line::setup_file_line",
+    args          => {path=>"p", line_content=>"id1"},
+    reset_state   => sub {
+        remove_tree "p";
+        write_text "p", "";
+    },
+    status        => 200,
+    after_do      => sub {
+        is(read_text("p"), "id1\n", "content");
+    },
+    after_undo    => sub {
+        is(read_text("p"), "", "content");
+    },
+);
+test_tx_action(
     name          => "can handle lack of newline ending in file",
     tmpdir        => $tmpdir,
     f             => "Setup::File::Line::setup_file_line",
